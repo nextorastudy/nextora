@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FlashCard Generator – NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: gradientMove 30s ease infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn {
+      background-color: #5a3fff;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background-color: white;
+      color: #111;
+      box-shadow: 0 0 10px #5a3fff;
+    }
+    .home-btn:hover {
+      background-color: white;
+      color: #000;
+      box-shadow: 0 0 12px #5a3fff;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-5">
+    <h1 class="text-xl font-bold select-none">NEXTORA</h1>
+    <button onclick="location.href='index.html'" class="home-btn px-6 py-2 rounded-full font-semibold bg-white/10 border border-white/20">Home</button>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-8 text-center">
+    <h2 class="text-3xl sm:text-4xl font-bold mb-4">FlashCard Generator</h2>
+    <p class="text-white/70 mb-6">Type a topic below and get 5 informative flashcards powered by Wikipedia.</p>
+
+    <!-- Input -->
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
+      <input id="topicInput" type="text" placeholder="e.g. Matter in our surroundings" class="w-full sm:w-2/3 px-6 py-3 text-black rounded-full outline-none font-semibold"/>
+      <button onclick="generateFlashcards()" class="btn">Generate</button>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="flex flex-wrap justify-center gap-3 text-sm mb-10">
+      <button class="btn text-sm px-4 py-2" onclick="suggest('Photosynthesis')">Photosynthesis</button>
+      <button class="btn text-sm px-4 py-2" onclick="suggest('Newton\'s Laws')">Newton's Laws</button>
+      <button class="btn text-sm px-4 py-2" onclick="suggest('World War II')">World War II</button>
+      <button class="btn text-sm px-4 py-2" onclick="suggest('Human Digestive System')">Human Digestive System</button>
+      <button class="btn text-sm px-4 py-2" onclick="suggest('Climate Change')">Climate Change</button>
+    </div>
+
+    <!-- Flashcards -->
+    <div id="cardsContainer" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 px-2"></div>
+<!-- Place this inside <main> just below cardsContainer -->
+<p class="text-xs text-white/50 italic mt-6 max-w-xl mx-auto">
+  Note: Some information may be limited or unavailable due to the topic's data constraints from Wikipedia. We apologize for any inconvenience.
+</p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center mt-16 text-white/40 text-sm px-4 pb-6">
+    © 2025 NEXTORA. Built by Mihir Anand.
+  </footer>
+
+  <script>
+    function suggest(text) {
+      document.getElementById('topicInput').value = text;
+      generateFlashcards();
+    }
+
+    async function generateFlashcards() {
+      const topic = document.getElementById("topicInput").value.trim();
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = '';
+
+      if (!topic) {
+        alert("Please enter a topic.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`);
+        const data = await res.json();
+
+        if (data.extract) {
+          let content = data.extract;
+          if (content.length < 400) {
+            content += " " + content; // double it for more content
+          }
+
+          const sentences = content.split(/(?<=\.)\s+/).filter(s => s.length > 30);
+          const chunks = [];
+          const chunkSize = Math.ceil(sentences.length / 5);
+
+          for (let i = 0; i < 5; i++) {
+            const part = sentences.slice(i * chunkSize, (i + 1) * chunkSize).join(' ');
+            if (part.trim()) chunks.push(part.trim());
+          }
+
+          chunks.forEach((text, i) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style.animationDelay = `${i * 0.15}s`;
+            card.textContent = text;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = `<p class="text-red-400">No data found. Try another topic.</p>`;
+        }
+      } catch (error) {
+        container.innerHTML = `<p class="text-red-400">Failed to fetch data.</p>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>

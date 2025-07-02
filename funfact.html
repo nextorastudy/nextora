@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun Fact Generator - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 500% 500%;
+      animation: gradientFlow 25s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fact-box {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      padding: 2rem;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      max-width: 700px;
+      min-height: 140px;
+      line-height: 1.7;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn-blue {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-blue:hover {
+      background-color: white;
+      color: #3b82f6;
+    }
+
+    .home-link {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .home-link:hover {
+      background-color: white;
+      color: #1a103d;
+    }
+
+    .filler {
+      text-align: center;
+      color: #ffffffbb;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen flex flex-col items-center justify-center px-4 py-12 text-white">
+
+  <!-- Home Button -->
+  <div class="absolute top-5 left-5">
+    <a href="index.html" class="home-link">Home</a>
+  </div>
+
+  <!-- Title -->
+  <h1 class="text-4xl sm:text-5xl font-extrabold mb-8 text-center">NEXTORA Fun Fact Generator</h1>
+
+  <!-- Fact Box -->
+  <div id="factBox" class="fact-box text-center">
+    Loading a fun fact...
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex flex-wrap justify-center gap-4 mt-10 mb-16">
+    <button onclick="getFact()" class="btn-blue">Get New Fact</button>
+    <button onclick="speakFact()" class="btn-blue">Read Aloud</button>
+  </div>
+
+  <!-- Filler Section -->
+  <div class="filler px-4">
+    <p class="mb-2">Curious minds never rest. Let NEXTORA spark your brain with fun facts that are random, educational, and unforgettable.</p>
+    <p>Every click opens a door to a new piece of knowledge.</p>
+  </div>
+
+  <script>
+    const factBox = document.getElementById("factBox");
+    let isTyping = false;
+
+    async function getFact() {
+      if (isTyping) return;
+      try {
+        const res = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random?language=en');
+        const data = await res.json();
+        const fact = data.text;
+        typeText(fact);
+      } catch {
+        typeText("Oops! Couldn't fetch a new fact. Please try again.");
+      }
+    }
+
+    function typeText(text) {
+      isTyping = true;
+      factBox.textContent = '';
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          factBox.textContent += text.charAt(index);
+          index++;
+        } else {
+          clearInterval(interval);
+          isTyping = false;
+        }
+      }, 20);
+    }
+
+    function speakFact() {
+      const text = factBox.textContent;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.rate = 1;
+      speechSynthesis.cancel(); // cancel previous
+      speechSynthesis.speak(utter);
+    }
+
+    window.onload = getFact;
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Essay Writer - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease-in-out;
+    }
+    .glass:hover {
+      transform: scale(1.01);
+    }
+    .typing {
+      border-right: .15em solid #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 2s steps(40, end), blink .75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: white; }
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+  <!-- Navbar -->
+  <nav class="w-full sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/10 text-white px-4 py-4 flex justify-between items-center">
+    <div class="text-xl font-bold">NEXTORA</div>
+    <a href="index.html" class="text-sm font-medium hover:text-purple-300 transition-all">Home</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-6 py-12 text-center">
+    <h1 class="text-3xl font-extrabold mb-8">Essay Writer</h1>
+    <div class="glass p-6 space-y-6">
+
+      <!-- Topic Input -->
+      <input type="text" id="topicInput" placeholder="Enter your topic here..."
+        class="w-full px-4 py-3 rounded bg-white/10 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+
+      <!-- Type Selector -->
+      <select id="typeSelector"
+        class="w-full px-4 py-3 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <option value="">-- Select Type --</option>
+        <option value="essay">Essay</option>
+        <option value="story">Story</option>
+        <option value="formal letter">Formal Letter</option>
+        <option value="informal letter">Informal Letter</option>
+      </select>
+
+      <!-- Generate Button -->
+      <button onclick="generate()" class="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-full font-semibold transition-transform hover:scale-105">Generate</button>
+
+      <!-- Output -->
+      <div id="responseBox" class="mt-6 text-left text-white space-y-4"></div>
+    </div>
+  </main>
+
+  <!-- Script -->
+  <script>
+    const apiKey = "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";
+
+    async function generate() {
+      const topic = document.getElementById("topicInput").value.trim();
+      const type = document.getElementById("typeSelector").value;
+      const output = document.getElementById("responseBox");
+
+      if (!topic || !type) {
+        alert("Please select type and enter topic.");
+        return;
+      }
+
+      output.innerHTML = `<p class='typing'>Generating ${type} on: "${topic}"...</p>`;
+
+      const prompt = `Write a detailed ${type} on the topic "${topic}". It should be well-structured, relevant for school students, and around 300 words.`;
+
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              { role: "system", content: "You are a helpful assistant that writes student-friendly essays, stories, and letters." },
+              { role: "user", content: prompt }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        const result = data.choices?.[0]?.message?.content || "No response from AI.";
+        output.innerHTML = `<div class='glass p-4'><p>${result.replace(/\n/g, "<br>")}</p></div>`;
+      } catch (e) {
+        output.innerHTML = `<p class="text-red-400">Error generating ${type}. Please try again later.</p>`;
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>

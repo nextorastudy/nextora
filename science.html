@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Science Concept Explainer - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .glass:hover {
+      transform: scale(1.01);
+    }
+    .fade-in {
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .light-mode {
+      background: #f8f8f8;
+      color: #111;
+    }
+    .light-mode .glass {
+      background: rgba(255, 255, 255, 0.8);
+      color: #111;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .light-mode input,
+    .light-mode button {
+      color: #000;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white transition-all duration-500" id="body">
+
+  <header class="flex justify-between items-center p-6">
+    <h1 class="text-2xl font-bold">NEXTORA</h1>
+    <div class="space-x-2">
+      <button onclick="location.href='index.html'" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 font-semibold">
+        Home
+      </button>
+      <button onclick="toggleTheme()" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 font-semibold">
+        Toggle Mode
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 text-center mt-10">
+    <h2 class="text-3xl font-extrabold mb-6">Science Concept Explainer</h2>
+    <p class="text-white/80 mb-6">Enter any science topic and get a clear, detailed explanation split into multiple points.</p>
+
+    <div class="glass p-6 mb-6">
+      <input type="text" id="topicInput" 
+        class="w-full bg-white/10 text-white placeholder-white/70 border border-white/20 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="e.g., Newton’s Laws of Motion" />
+      <button onclick="getExplanation()" 
+        class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-700 transition-all">
+        Explain Concept
+      </button>
+    </div>
+
+    <div class="glass p-4 mb-8">
+      <h3 class="font-bold text-lg mb-2">Example Topics:</h3>
+      <div class="flex flex-wrap gap-2 justify-center">
+        <button onclick="fillExample('Photosynthesis process in plants')" class="px-3 py-1 text-sm bg-white/10 rounded hover:bg-white/20">Photosynthesis</button>
+        <button onclick="fillExample('Structure of an atom')" class="px-3 py-1 text-sm bg-white/10 rounded hover:bg-white/20">Atom Structure</button>
+        <button onclick="fillExample('Acids, bases and salts')" class="px-3 py-1 text-sm bg-white/10 rounded hover:bg-white/20">Acids and Bases</button>
+        <button onclick="fillExample('Respiratory system in humans')" class="px-3 py-1 text-sm bg-white/10 rounded hover:bg-white/20">Respiration</button>
+        <button onclick="fillExample('Reflection and refraction of light')" class="px-3 py-1 text-sm bg-white/10 rounded hover:bg-white/20">Light</button>
+      </div>
+    </div>
+
+    <div id="output" class="space-y-4"></div>
+  </main>
+
+  <script>
+    const apiKey = "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";
+
+    function toggleTheme() {
+      document.getElementById('body').classList.toggle('light-mode');
+    }
+
+    function fillExample(topic) {
+      document.getElementById('topicInput').value = topic;
+    }
+
+    async function getExplanation() {
+      const topic = document.getElementById("topicInput").value.trim();
+      const output = document.getElementById("output");
+      output.innerHTML = `
+        <div class='text-white text-center animate-pulse'>
+          Generating response for <strong>${topic}</strong>...
+        </div>`;
+
+      if (!topic) {
+        output.innerHTML = "<p class='text-red-400'>Please enter a topic.</p>";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              { role: "system", content: "You are a science expert who explains concepts clearly in five deeply informative points without emojis or symbols." },
+              { role: "user", content: `Explain the following concept clearly: ${topic}` }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        const raw = data.choices?.[0]?.message?.content || "No explanation found.";
+        const points = raw.split(/\n\n+/).filter(p => p.trim().length > 0);
+
+        output.innerHTML = points.map((point, i) => `
+          <div class="glass text-left fade-in">
+            <h3 class="font-bold mb-1">Point ${i + 1}</h3>
+            <p>${point.replace(/\n/g, "<br>")}</p>
+            <button onclick="readAloud(\`${point.replace(/`/g, "\\`")}\`)" class="mt-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-white hover:text-blue-600 transition-all">
+              Read Aloud
+            </button>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error(error);
+        output.innerHTML = "<p class='text-red-400'>Something went wrong. Please try again.</p>";
+      }
+    }
+
+    function readAloud(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = 'en-US';
+      speech.rate = 1;
+      speech.pitch = 1;
+      window.speechSynthesis.speak(speech);
+    }
+  </script>
+
+</body>
+</html>

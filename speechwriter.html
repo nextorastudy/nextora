@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speech Writer - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-box {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 2rem;
+      color: #fff;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    }
+    .typing-text::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: #5a3fff;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    button:hover {
+      transform: scale(1.03);
+      transition: all 0.3s;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+  <div class="max-w-3xl mx-auto px-4 py-10">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold">🎤 Speech Writer</h1>
+      <a href="index.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition">Home</a>
+    </div>
+
+    <div class="glass-box mb-6">
+      <label class="block mb-2 font-semibold">Enter Your Topic:</label>
+      <input id="topicInput" type="text" placeholder="e.g. Climate Change, AI in Education..." class="w-full p-3 rounded bg-black/30 text-white border border-white/20">
+
+      <label class="block mt-4 mb-2 font-semibold">Speech Type:</label>
+      <select id="speechType" class="w-full p-3 rounded bg-black/30 text-white border border-white/20">
+        <option value="motivational">Motivational</option>
+        <option value="informative">Informative</option>
+        <option value="persuasive">Persuasive</option>
+      </select>
+
+      <button onclick="generateSpeech()" class="mt-6 bg-blue-500 hover:bg-white hover:text-black px-6 py-2 rounded-full font-semibold transition">Generate Speech</button>
+    </div>
+
+    <div id="outputBox" class="glass-box min-h-[200px] mt-8 whitespace-pre-line leading-relaxed text-lg typing-text"></div>
+  </div>
+
+  <script>
+    const API_KEY = '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'; // Groq API key
+
+    async function generateSpeech() {
+      const topic = document.getElementById("topicInput").value.trim();
+      const type = document.getElementById("speechType").value;
+      const outputBox = document.getElementById("outputBox");
+
+      if (!topic) {
+        outputBox.innerText = "Please enter a topic.";
+        return;
+      }
+
+      outputBox.innerText = "Generating your speech...";
+
+      try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              {
+                role: "user",
+                content: `Write a ${type} speech on the topic '${topic}' in 5 to 7 detailed sentences suitable for students. Don’t use any emojis.`,
+              },
+            ],
+          }),
+        });
+
+        const data = await response.json();
+        const output = data.choices?.[0]?.message?.content || "Sorry, couldn't generate the speech.";
+
+        typeWithAnimation(outputBox, output);
+      } catch (error) {
+        outputBox.innerText = "An error occurred while generating the speech. Please try again later.";
+      }
+    }
+
+    function typeWithAnimation(el, text) {
+      el.innerText = "";
+      let index = 0;
+      function type() {
+        if (index < text.length) {
+          el.innerText += text.charAt(index);
+          index++;
+          setTimeout(type, 20);
+        }
+      }
+      type();
+    }
+  </script>
+</body>
+</html>

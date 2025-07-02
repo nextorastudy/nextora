@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Note Summarizer – NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: gradientShift 30s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-box {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    .glass-box:hover {
+      transform: scale(1.02);
+      transition: 0.3s ease;
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-purple {
+      background-color: #5a3fff;
+      transition: all 0.3s ease;
+    }
+
+    .btn-purple:hover {
+      background-color: white;
+      color: #5a3fff;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen flex items-center justify-center px-4">
+
+  <div class="absolute top-4 left-4">
+    <a href="index.html" class="text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+      ← Home
+    </a>
+  </div>
+
+  <div class="glass-box max-w-2xl w-full fade-in">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 text-center">🧠 Note Summarizer</h1>
+    <p class="text-white/80 text-sm mb-6 text-center">Paste your notes or enter a topic (like a science concept). We’ll summarize it for quick understanding!</p>
+
+    <textarea id="notesInput" rows="6" placeholder="Enter your notes or topic..." class="w-full p-4 rounded-lg bg-white/10 text-white placeholder-white/60 outline-none mb-4"></textarea>
+
+    <button onclick="handleSummarization()" class="btn-purple text-white px-6 py-2 rounded-full font-semibold w-full">Summarize</button>
+
+    <div id="summarySection" class="mt-6 hidden fade-in">
+      <h2 class="text-lg font-bold mb-2">Summary:</h2>
+      <div id="summaryText" class="bg-white/10 p-4 rounded-lg text-white text-sm whitespace-pre-line"></div>
+    </div>
+
+    <p class="text-xs text-white/50 mt-6 italic">Note: If Wikipedia doesn't provide enough information, the summarizer will generate a brief explanation locally. Please don't mind missing info.</p>
+  </div>
+
+  <script>
+    async function handleSummarization() {
+      const input = document.getElementById('notesInput').value.trim();
+      const summaryEl = document.getElementById('summaryText');
+      const summarySection = document.getElementById('summarySection');
+
+      if (!input) {
+        summaryEl.innerText = "Please enter some notes or a topic.";
+        summarySection.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(input)}`);
+        const data = await res.json();
+
+        if (data.extract && data.extract.length > 0) {
+          summaryEl.innerText = data.extract;
+        } else {
+          throw new Error("No valid Wikipedia summary.");
+        }
+      } catch (err) {
+        // Fallback to local summarizer
+        const localSummary = summarizeTextLocally(input, 3);
+        summaryEl.innerText = localSummary || "Summary can't be generated.";
+      }
+
+      summarySection.classList.remove("hidden");
+    }
+
+    function summarizeTextLocally(text, maxSentences = 3) {
+      const stopWords = new Set(["i", "me", "my", "we", "our", "you", "he", "she", "it", "they", "them", "is", "are", "was", "were", "a", "an", "the", "and", "but", "or", "so", "of", "to", "with", "for", "on", "in", "by", "about", "as"]);
+      const sentences = text.match(/[^.!?]*[.!?]/g) || [];
+      const wordFreq = {};
+
+      for (let sentence of sentences) {
+        const words = sentence.toLowerCase().match(/\w+/g) || [];
+        for (let word of words) {
+          if (!stopWords.has(word)) {
+            wordFreq[word] = (wordFreq[word] || 0) + 1;
+          }
+        }
+      }
+
+      const sentenceScores = sentences.map(sentence => {
+        let score = 0;
+        const words = sentence.toLowerCase().match(/\w+/g) || [];
+        for (let word of words) {
+          score += wordFreq[word] || 0;
+        }
+        return { sentence, score };
+      });
+
+      const top = sentenceScores
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxSentences)
+        .map(obj => obj.sentence.trim());
+
+      return top.join(" ");
+    }
+  </script>
+</body>
+</html>

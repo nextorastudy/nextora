@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Timeline Tool - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(270deg, #0f051d, #3f0d38, #612e8b, #000000);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .timeline-item {
+      animation: fadeInUp 0.5s ease-in-out both;
+    }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+  <nav class="w-full flex justify-between items-center px-6 py-4 bg-white/10 backdrop-blur-md sticky top-0 z-50">
+    <div class="text-xl font-extrabold">NEXTORA</div>
+    <a href="index.html" class="text-sm font-semibold text-white hover:text-purple-300 transition-all duration-300">Home</a>
+  </nav>  <main class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold text-center mb-6">Interactive Timeline Tool</h1>
+    <div class="glass p-6 mb-6">
+      <input id="searchInput" type="text" placeholder="Enter topic (e.g., World War 2)" class="w-full px-4 py-3 rounded bg-white/10 text-white placeholder-white/60 border border-white/20 mb-2" oninput="suggestTopics(this.value)" />
+      <ul id="suggestions" class="mb-2 text-white/80"></ul>
+      <button onclick="generateTimeline()" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded font-semibold transition-transform hover:scale-105">Generate Timeline</button>
+    </div>
+    <div id="timelineContainer" class="space-y-6"></div>
+  </main>  <footer class="text-center text-white/50 text-sm mt-12 py-6">© 2025 NEXTORA — Built with ❤️</footer>  <script>
+    const apiKey = "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";
+
+    async function suggestTopics(query) {
+      if (query.length < 3) return;
+      const res = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=${query}`);
+      const data = await res.json();
+      const list = document.getElementById("suggestions");
+      list.innerHTML = data[1].map(item => `<li class='hover:underline cursor-pointer' onclick='selectSuggestion("${item}")'>${item}</li>`).join("\n");
+    }
+
+    function selectSuggestion(text) {
+      document.getElementById("searchInput").value = text;
+      document.getElementById("suggestions").innerHTML = "";
+    }
+
+    async function generateTimeline() {
+      const topic = document.getElementById("searchInput").value.trim();
+      const timelineContainer = document.getElementById("timelineContainer");
+      timelineContainer.innerHTML = `<div class='glass p-4 text-white/70'>Generating timeline for: <strong>${topic}</strong>...</div>`;
+
+      try {
+        const wikiRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`);
+        const wikiData = await wikiRes.json();
+        const summaryText = wikiData.extract;
+
+        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              { role: "system", content: "You're a timeline assistant. Convert input into a historical timeline with year and brief description." },
+              { role: "user", content: `Generate a timeline from the following summary:\n\n${summaryText}` }
+            ]
+          })
+        });
+
+        const groqData = await groqRes.json();
+        const events = groqData.choices?.[0]?.message?.content.split("\n").filter(line => line.trim().length > 0);
+
+        if (!events || events.length === 0) throw new Error("No events found.");
+
+        timelineContainer.innerHTML = events.map((e, i) => `<div class='glass p-4 timeline-item' style='animation-delay: ${i * 0.2}s'>${e}</div>`).join("\n");
+
+      } catch (err) {
+        timelineContainer.innerHTML = `<div class='glass p-4 text-red-400'>${err.message || "Failed to generate timeline."}</div>`;
+      }
+    }
+  </script></body>
+</html>

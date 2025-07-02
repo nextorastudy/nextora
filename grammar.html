@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grammar Improver - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 40px rgba(90, 63, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+  <header class="flex justify-between items-center p-6">
+    <h1 class="text-2xl font-bold">NEXTORA</h1>
+    <button onclick="location.href='index.html'" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 font-semibold">Home</button>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 text-center mt-10">
+    <h2 class="text-3xl font-extrabold mb-6">Grammar Improver</h2>
+    <p class="text-white/80 mb-6">Paste your text below and NEXTORA will improve grammar, clarity, and spelling.</p>
+    
+    <div class="glass-card mb-6">
+      <textarea id="inputText" rows="6" class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" placeholder="Paste your paragraph here..."></textarea>
+      <button onclick="improveGrammar()" class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Improve Grammar</button>
+    </div>
+
+    <div id="outputSection" class="glass-card mb-6 hidden">
+      <h3 class="text-xl font-bold mb-2">Improved Text:</h3>
+      <div id="outputText" class="text-left whitespace-pre-line text-white/90 min-h-[80px]"></div>
+      <button onclick="readAloud()" class="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Read Aloud</button>
+    </div>
+  </main>
+
+  <script>
+    const apiKey = "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";
+
+    async function improveGrammar() {
+      const input = document.getElementById("inputText").value.trim();
+      const outputSection = document.getElementById("outputSection");
+      const outputText = document.getElementById("outputText");
+
+      if (!input) return alert("Please paste some text.");
+      outputText.innerHTML = "⏳ Improving text...";
+      outputSection.classList.remove("hidden");
+
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              { role: "system", content: "You are an expert grammar assistant. Improve the grammar, spelling, and clarity of the user's input." },
+              { role: "user", content: input }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        const improved = data.choices?.[0]?.message?.content || "No response from AI.";
+
+        // Typing animation
+        outputText.innerHTML = "";
+        let i = 0;
+        function typeWriter() {
+          if (i < improved.length) {
+            outputText.innerHTML += improved.charAt(i);
+            i++;
+            setTimeout(typeWriter, 20);
+          }
+        }
+        typeWriter();
+      } catch (e) {
+        outputText.textContent = "⚠️ Error improving text. Please try again later.";
+        console.error(e);
+      }
+    }
+
+    function readAloud() {
+      const text = document.getElementById("outputText").textContent;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 1;
+      speechSynthesis.speak(utter);
+    }
+  </script>
+</body>
+</html>

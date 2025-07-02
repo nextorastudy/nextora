@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Presentation Generator - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000);
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 40px rgba(90, 63, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+  <header class="flex justify-between items-center p-6">
+    <h1 class="text-2xl font-bold">NEXTORA</h1>
+    <button onclick="location.href='index.html'" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 font-semibold">Home</button>
+  </header>
+  <main class="max-w-4xl mx-auto px-6 text-center mt-10">
+    <h2 class="text-3xl font-extrabold mb-6">AI Presentation Generator</h2>
+    <p class="text-white/80 mb-4">Generate visually engaging presentation slides powered by AI and Unsplash.</p><div class="glass-card mb-6">
+  <input type="text" id="topicInput" class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" placeholder="Enter your topic (e.g., Matter in our surroundings)" />
+  <div class="flex gap-4 mt-4">
+    <input type="number" id="slideCount" value="6" max="10" min="1" class="w-20 p-2 rounded bg-transparent border border-white/20 text-center text-white" />
+    <button onclick="generateSlides()" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Generate Slides</button>
+  </div>
+  <div class="mt-4 text-sm text-white/60 italic">You can generate up to 10 slides. Default is 6.</div>
+</div>
+
+<div class="glass-card mb-6">
+  <h3 class="text-xl font-bold mb-2">Predefined Templates</h3>
+  <div class="flex flex-wrap justify-center gap-2">
+    <button onclick="fillTemplate('Photosynthesis process for class 9')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Photosynthesis</button>
+    <button onclick="fillTemplate('Newton’s laws of motion with examples')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Newton’s Laws</button>
+    <button onclick="fillTemplate('Climate change and its effects')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Climate Change</button>
+  </div>
+</div>
+
+<div id="output" class="space-y-6"></div>
+
+<p class="text-xs mt-8 text-white/50 italic">Note: If content is missing or unclear, please retry or modify your prompt. Sorry for any inconvenience.</p>
+
+  </main>  <script>
+    const apiKey = "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";
+    const unsplashKey = "EUoo-oIuZM6LMyeikqmMmnL7Or_tNCWLsGcu0r00B8Y";
+
+    function fillTemplate(text) {
+      document.getElementById('topicInput').value = text;
+    }
+
+    async function generateSlides() {
+      const topic = document.getElementById("topicInput").value.trim();
+      const slideCount = parseInt(document.getElementById("slideCount").value) || 6;
+
+      const outputDiv = document.getElementById("output");
+      if (!topic) return alert("Please enter a topic.");
+
+      outputDiv.innerHTML = `<p class='text-white/70 animate-pulse'>Generating slides...</p>`;
+
+      try {
+        const aiResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              { role: "system", content: "You are an AI assistant that generates presentation slide text based on a topic. Provide slide content in numbered format." },
+              { role: "user", content: `Generate ${slideCount} slide contents on: ${topic}` }
+            ]
+          })
+        });
+
+        const aiData = await aiResponse.json();
+        const rawSlides = aiData.choices?.[0]?.message?.content || "Sorry, no content was generated.";
+
+        const slides = rawSlides.split(/\n\n+/).filter(p => p.trim().length > 0);
+        outputDiv.innerHTML = "";
+
+        for (let i = 0; i < Math.min(slides.length, slideCount); i++) {
+          const imgResp = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(topic)}&client_id=${unsplashKey}`);
+          const imgData = await imgResp.json();
+
+          outputDiv.innerHTML += `
+            <div class='glass-card animate-fade-in'>
+              <img src="${imgData.urls?.regular || '#'}" alt="${topic}" class="rounded mb-4 w-full h-64 object-cover" />
+              <div class="text-left">
+                ${slides[i].replace(/\n/g, '<br>')}
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        outputDiv.innerHTML = `<div class='text-red-400'>Something went wrong while generating your slides. Sorry for the trouble.</div>`;
+        console.error(err);
+      }
+    }
+  </script></body>
+</html>

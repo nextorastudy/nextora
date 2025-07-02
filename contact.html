@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: smoothGradient 30s ease infinite;
+    }
+    @keyframes smoothGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    .success-popup {
+      display: none;
+    }
+    .success-popup.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white">
+  <!-- Navbar -->
+  <nav class="w-full sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/10 text-white px-4 sm:px-8 py-4 flex justify-between items-center">
+    <div class="text-xl font-extrabold">NEXTORA</div>
+    <div>
+      <a href="index.html" class="text-sm font-semibold hover:underline hover:text-purple-300 transition-all duration-300">
+        <i class="fas fa-home mr-1"></i> Home
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="max-w-6xl mx-auto px-4 py-10 flex flex-col items-center justify-center">
+    <div class="w-full max-w-xl glass p-8 relative">
+      <h1 class="text-3xl font-bold mb-6 text-center">Contact Us</h1>
+      <form id="contactForm" action="https://formspree.io/f/mwpbyydg" method="POST" class="space-y-6">
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Your Name</label>
+          <input type="text" name="name" required placeholder="Full Name"
+            class="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Email Address</label>
+          <input type="email" name="email" required placeholder="you@example.com"
+            class="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Your Message</label>
+          <textarea name="message" required placeholder="Write your message..." rows="5"
+            class="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+        </div>
+        <div class="text-center">
+          <button type="submit"
+            class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full font-semibold shadow-lg transition-transform hover:scale-105">
+            <i class="fas fa-paper-plane mr-2"></i>Send Message
+          </button>
+        </div>
+      </form>
+
+      <!-- Success Popup -->
+      <div id="successPopup" class="success-popup absolute inset-0 items-center justify-center bg-black/70 rounded-xl text-center text-white font-semibold text-lg px-4 py-6 z-10">
+        <div class="glass p-6 rounded-xl shadow-xl">
+          <i class="fas fa-check-circle text-4xl text-green-400 mb-3"></i>
+          <p>Message sent successfully!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Section: Inspire -->
+    <div class="mt-12 max-w-2xl w-full glass p-6 text-center">
+      <h2 class="text-2xl font-bold mb-4">Why Reach Out?</h2>
+      <p class="text-white/80 mb-4">We love to hear from students, educators, and tech enthusiasts. Whether it's support, suggestions, or ideas — your feedback helps us grow.</p>
+      <blockquote class="italic text-white/70">“Collaboration is the key to innovation. Let’s build the future of learning together.”</blockquote>
+    </div>
+
+    <!-- Decorative Bottom Fill -->
+    <div class="mt-16 w-full max-w-3xl glass p-6 text-center text-white/80 text-sm">
+      Feel free to contact us for support, suggestions, or feedback. Thank you! 💬
+    </div>
+  </div>
+
+  <footer class="mt-10 text-center text-white text-xs opacity-50 hover:opacity-80 transition-opacity duration-300">
+    © 2025 NEXTORA. Created with ❤️ by Mihir Anand.
+  </footer>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const successPopup = document.getElementById('successPopup');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const action = form.getAttribute('action');
+
+      try {
+        const res = await fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          form.reset();
+          successPopup.classList.add('show');
+          setTimeout(() => successPopup.classList.remove('show'), 4000);
+        } else {
+          alert('Something went wrong. Try again later.');
+        }
+      } catch (error) {
+        alert('Network error. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

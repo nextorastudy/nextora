@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask AI - NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: gradientShift 30s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .message.bot {
+      animation: fadeIn 0.5s ease-in-out;
+      white-space: pre-wrap;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .typing-dots::after {
+      content: ' .';
+      animation: dots 1.5s steps(3, end) infinite;
+    }
+    @keyframes dots {
+      0% { content: ' .'; }
+      33% { content: ' ..'; }
+      66% { content: ' ...'; }
+      100% { content: ' .'; }
+    }
+    #animatedGreeting {
+      min-height: 32px;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen text-white flex flex-col justify-between">
+  <header class="flex justify-between items-center px-6 py-4">
+    <div class="text-xl font-bold">NEXTORA</div>
+    <a href="index.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold hover:opacity-80 transition">Home</a>
+  </header>
+
+  <main class="flex flex-col items-center px-6 py-6">
+    <h1 id="animatedGreeting" class="text-xl sm:text-2xl font-semibold mb-6 text-center"></h1>
+
+    <div class="flex gap-2 mb-4">
+      <button onclick="preset('Hey')" class="bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm">Hey</button>
+      <button onclick="preset('Hi')" class="bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm">Hi</button>
+      <button onclick="preset('What can you do?')" class="bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm">What can you do?</button>
+    </div>
+
+    <div class="w-full max-w-xl">
+      <div id="chatWindow" class="bg-white/5 backdrop-blur-sm p-4 rounded-xl h-[400px] overflow-y-auto text-sm space-y-4 mb-4"></div>
+      <div class="flex items-center bg-white/10 rounded-full px-4 py-2">
+        <input id="userInput" type="text" placeholder="Type your question..." class="bg-transparent outline-none flex-grow text-white placeholder-white/60 text-sm" />
+        <button onclick="startVoice()" id="micBtn" class="mx-2 text-blue-300"><i class="fas fa-microphone"></i></button>
+        <button onclick="speakReply()" id="speakBtn" class="mx-2"><i class="fas fa-volume-up"></i></button>
+        <button onclick="sendMessage()" id="sendBtn" class="bg-blue-500 px-3 py-1 rounded-full"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center text-xs opacity-40 py-4">
+    © 2025 NEXTORA. Built by Mihir Anand.
+  </footer>
+
+  <script>
+    const API_KEY = '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';
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+    let lastBotReply = '';
+
+    function appendMessage(role, text) {
+      const div = document.createElement('div');
+      div.className = `message ${role} ${role === 'bot' ? 'text-left' : 'text-right'}`;
+      div.innerHTML = `<div class="bg-white/10 px-4 py-2 rounded-xl inline-block max-w-[80%]">${text}</div>`;
+      chatWindow.appendChild(div);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+      if (role === 'bot') lastBotReply = text;
+    }
+
+    function sendMessage() {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+      appendMessage('user', msg);
+      userInput.value = '';
+      appendMessage('bot', '<span class="typing-dots">Typing</span>');
+      fetchGroq(msg);
+    }
+
+    function detectLangCode(text) {
+      const c = text.charCodeAt(0);
+      if (c >= 0x0900 && c <= 0x097F) return 'hi-IN'; // Hindi
+      return 'en-US';
+    }
+
+    async function fetchGroq(prompt) {
+      const langCode = detectLangCode(prompt);
+      const emotionalTone = prompt.toLowerCase().includes("sad") ? "Please reply with empathy." : "";
+
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'llama3-8b-8192',
+          messages: [
+            { role: 'system', content: `Always reply in user's language (${langCode}). If asked 'who made you?', say 'I was proudly made by Mihir Anand.' ${emotionalTone}` },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+
+      const data = await res.json();
+      chatWindow.lastChild.remove();
+      const reply = data.choices?.[0]?.message?.content || 'Sorry, I couldn\'t process that.';
+      appendMessage('bot', reply);
+    }
+
+    function preset(msg) {
+      userInput.value = msg;
+      sendMessage();
+    }
+
+    function startVoice() {
+      const micBtn = document.getElementById('micBtn');
+      micBtn.classList.add('bg-blue-500', 'rounded-full', 'px-2');
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.onresult = (event) => {
+        userInput.value = event.results[0][0].transcript;
+        sendMessage();
+        micBtn.classList.remove('bg-blue-500');
+      };
+      recognition.start();
+    }
+
+    function speakReply() {
+      const speakBtn = document.getElementById('speakBtn');
+      speakBtn.innerHTML = '<i class="fas fa-volume-up typing-dots"></i>';
+      const utterance = new SpeechSynthesisUtterance(lastBotReply);
+      utterance.lang = detectLangCode(lastBotReply);
+      utterance.onend = () => {
+        speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      };
+      speechSynthesis.speak(utterance);
+    }
+
+    // Greeting Animation
+    const greetings = [
+      "Hello, I'm your AI study buddy!",
+      "Ask me anything about school or life!",
+      "Need help? NEXTORA is here!",
+      "Type your question below..."
+    ];
+    let greetIndex = 0;
+    const greetingEl = document.getElementById('animatedGreeting');
+    function showGreetingTyping(text, index = 0) {
+      if (index <= text.length) {
+        greetingEl.textContent = text.slice(0, index);
+        setTimeout(() => showGreetingTyping(text, index + 1), 50);
+      } else {
+        setTimeout(() => {
+          greetIndex = (greetIndex + 1) % greetings.length;
+          showGreetingTyping(greetings[greetIndex]);
+        }, 2000);
+      }
+    }
+    showGreetingTyping(greetings[greetIndex]);
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Tool – NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: smoothGradient 30s ease infinite;
+    }
+    @keyframes smoothGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      color: white;
+    }
+    .glass-box:hover {
+      transform: scale(1.015);
+      box-shadow: 0 0 30px rgba(90, 63, 255, 0.2);
+    }
+    textarea {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      width: 100%;
+      resize: vertical;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen flex flex-col justify-between text-white">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center px-6 py-4">
+    <div class="text-xl font-bold">NEXTORA</div>
+    <a href="index.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold hover:opacity-80 transition">Home</a>
+  </header>
+
+  <!-- Main -->
+  <main class="flex flex-col items-center justify-center px-6 pb-24 fade-in">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-6">AI Research Assistant</h1>
+    <p class="text-center text-white/80 max-w-xl mb-8">Enter a topic or complex question and get a well-researched, descriptive explanation instantly.</p>
+
+    <div class="glass-box w-full max-w-2xl space-y-6">
+      <textarea id="researchPrompt" rows="4" placeholder="Type your topic or question here..."></textarea>
+      <button onclick="generateResearch()" class="bg-[#5a3fff] text-white px-6 py-2 rounded-full font-semibold hover:opacity-90 transition">Get Response</button>
+      <div id="researchOutput" class="whitespace-pre-wrap text-white/90"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs opacity-40 py-4">
+    © 2025 NEXTORA. Created with ♥ by Mihir Anand.
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const API_KEY = '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';
+
+    async function generateResearch() {
+      const prompt = document.getElementById("researchPrompt").value.trim();
+      const outputDiv = document.getElementById("researchOutput");
+
+      if (!prompt) {
+        alert("Please enter a research topic or question.");
+        return;
+      }
+
+      outputDiv.innerHTML = "<span class='italic text-sm text-white/50'>Researching...</span>";
+
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [{
+              role: "user",
+              content: `You are an expert research AI assistant created by Mihir Anand. Provide a well-researched, detailed and descriptive answer for the following:\n\n${prompt}`
+            }]
+          })
+        });
+
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "Sorry, no results.";
+        outputDiv.innerHTML = `<div class="fade-in">${reply}</div>`;
+      } catch (err) {
+        outputDiv.innerHTML = "❌ Error retrieving data. Please try again later.";
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
