@@ -1,306 +1,74 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nextora</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nextora | Under Maintenance</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
     body {
-      font-family: 'Inter', sans-serif;
-    }
-    .animated-bg {
-      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
-      background-size: 600% 600%;
-      animation: smoothGradient 30s ease infinite;
-    }
-    @keyframes smoothGradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    nav ul li a, .elevated-btn, nav button {
-      transition: all 0.3s ease;
-    }
-    nav ul li a:hover, .elevated-btn:hover, nav button:hover {
-      transform: scale(1.05);
-      filter: drop-shadow(0 0 0.6rem #5a3fff);
-    }
-    nav ul li a:active, nav button:active {
-      transform: scale(0.95);
-    }
-    .glass-description, .glass-fill, .glass-developer {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1.5rem 2rem;
-      color: #ffffffcc;
-      font-size: 0.95rem;
-      font-weight: 500;
-      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #0f172a; /* Dark Blue Background */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f8fafc; /* Light text */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      flex-direction: column;
     }
-    .glass-description:hover, .glass-fill:hover, .glass-developer:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 40px rgba(90, 63, 255, 0.2);
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #38bdf8; /* Sky blue */
+      margin-bottom: 20px;
     }
-    .typing-container {
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 0.15em solid transparent;
-      max-width: 100%;
-      font-weight: 700;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
-    .blinking-cursor {
-      animation: blink 1s step-start infinite;
-      color: #5a3fff;
+
+    p {
+      font-size: 1rem;
+      max-width: 400px;
+      margin-bottom: 30px;
+      opacity: 0.8;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
+
+    .loader {
+      border: 6px solid #1e293b;
+      border-top: 6px solid #38bdf8;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
     }
-    @keyframes fadeInScroll {
-      from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    .fade-on-scroll {
-      opacity: 0;
-      transform: translateY(40px) scale(0.95);
-      transition: all 0.6s ease-out;
-    }
-    .fade-on-scroll.in-view {
-      animation: fadeInScroll 1.2s ease-out forwards;
-    }
-    .light-mode {
-      background-color: #f5f5f5;
-      color: #111 !important;
-    }
-    .light-mode .text-white { color: #111 !important; }
-    .light-mode .glass-fill,
-    .light-mode .glass-description,
-    .light-mode .glass-developer {
-      background: rgba(0, 0, 0, 0.05);
-      color: #222;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    .light-mode .blinking-cursor {
-      color: #5a3fff;
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.8rem;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
-  <div class="relative min-h-screen animated-bg">
-    <img src="https://storage.googleapis.com/a1aa/image/344c1948-4095-4b41-07cf-dd635a9b29f5.jpg"
-      class="absolute inset-0 w-full h-full object-cover -z-10 opacity-30" alt="BG" />
-    <header class="flex items-center justify-between px-4 sm:px-6 py-6 max-w-7xl mx-auto flex-wrap gap-4 sm:flex-nowrap">
-      <div class="text-white font-extrabold text-xl select-none">NEXTORA</div>
-      <nav>
-        <ul class="flex flex-wrap justify-center sm:justify-start space-x-2 sm:space-x-4 bg-white/10 rounded-full px-4 py-1 text-white text-sm font-semibold select-none text-center">
-          <li><a href="askai.html" class="hover:underline">ASK AI</a></li>
-          <li><a href="research.html" class="hover:underline">RESEARCH</a></li>
-          <li><a href="essay.html" class="hover:underline">ESSAY</a></li>
-          <li><a href="presentation.html" class="hover:underline">PRESENTATION</a></li>
-        </ul>
-      </nav>
-      <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap justify-center">
-        <button onclick="location.href='contact.html'" class="bg-white/10 border border-white/20 text-white text-xs font-semibold px-4 sm:px-5 py-2 rounded-full hover:bg-white/20 transition-all duration-300 shadow-sm">
-          <i class="fas fa-envelope mr-2"></i>Contact Us
-        </button>
-        <button onclick="toggleTheme()" class="bg-white/10 border border-white/20 text-white text-xs font-semibold px-3 py-2 rounded-full hover:bg-white/20 transition-all duration-300">
-          <i class="fas fa-adjust"></i>
-        </button>
-        <button onclick="location.href='get-started.html'" class="bg-white rounded-full px-4 sm:px-5 py-2 text-xs font-semibold select-none">
-          Get started
-        </button>
-      </div>
-    </header>
 
-    <main class="flex flex-col items-center justify-center text-center px-4 sm:px-6 mt-24 sm:mt-32 max-w-6xl mx-auto w-full">
-      <h1 class="text-white font-extrabold text-3xl sm:text-4xl md:text-5xl leading-tight">
-        POWERED BY NEXTORA.<br />FOCUSED ON YOU.
-      </h1>
-      <button onclick="location.href='get-started.html'" class="mt-10 sm:mt-16 bg-[#5a3fff] rounded-full px-8 py-3 text-white text-sm font-semibold select-none elevated-btn">
-        Get Started for Free ..
-      </button>
+  <div class="logo">Nextora</div>
+  <h1>We'll Be Back Soon!</h1>
+  <p>Our website is currently undergoing scheduled maintenance.<br>
+     Thank you for your patience. We'll be back online shortly.</p>
 
-      <div class="flex justify-center mt-8 sm:mt-10">
-        <div class="text-md sm:text-lg md:text-xl text-white typing-container">
-          <span id="typedText"></span><span class="blinking-cursor">|</span>
-        </div>
-      </div>
+  <div class="loader"></div>
 
-      <section class="mt-10 fade-on-scroll text-white text-center">
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-6">What You Can Do with NEXTORA</h2>
-        <div class="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto px-2">
-          <div class="glass-fill">📚 Summarize Notes Instantly</div>
-          <div class="glass-fill">🧠 AI-Generated Mind Maps</div>
-          <div class="glass-fill">🎯 Track Study Goals</div>
-          <div class="glass-fill">📝 Instant Homework Help</div>
-        </div>
-      </section>
+  <div class="footer">© 2025 Nextora. All rights reserved.</div>
 
-      <section class="mt-12 fade-on-scroll text-white text-center">
-        <h2 class="text-lg sm:text-xl font-semibold mb-3">Stay Inspired</h2>
-        <p id="quoteSlider" class="italic text-base sm:text-lg">Loading...</p>
-      </section>
-
-      <section class="mt-12 fade-on-scroll text-white text-center max-w-3xl mx-auto px-2">
-        <h2 class="text-xl sm:text-2xl font-bold mb-4">What Students Say</h2>
-        <blockquote class="glass-fill mb-3">“NEXTORA helped me write my entire science essay in minutes!” – Aarav, Grade 9</blockquote>
-        <blockquote class="glass-fill">“This is like having a study buddy 24/7.” – Isha, CBSE Class 10</blockquote>
-      </section>
-
-      <section class="mt-12 fade-on-scroll text-white text-center">
-        <h2 class="text-xl sm:text-2xl font-bold mb-6">NEXTORA in Numbers</h2>
-        <div class="flex flex-wrap justify-center gap-4 max-w-xl mx-auto px-2">
-          <div class="glass-fill text-base sm:text-lg"><strong id="students">0</strong><br>Students Helped</div>
-          <div class="glass-fill text-base sm:text-lg"><strong id="accuracy">0%</strong><br>AI Accuracy</div>
-          <div class="glass-fill text-base sm:text-lg"><strong id="speed">0</strong><br>Avg. Response Time (sec)</div>
-        </div>
-      </section>
-
-      <section class="mt-12 fade-on-scroll text-white text-center max-w-xl mx-auto px-4">
-        <h2 class="text-lg sm:text-xl font-bold mb-3">AI Daily Tip</h2>
-        <div id="aiTip" class="glass-fill text-sm italic text-white/90">
-          Loading tip...
-        </div>
-      </section>
-
-      <div class="glass-developer mt-10 fade-on-scroll px-4 w-full max-w-2xl mx-auto">
-        <h2 class="text-white font-bold text-lg mb-2">About the Developer</h2>
-        <p>
-          Created by <strong>Mihir Anand</strong> from <strong>Mount Litera Zee School</strong>, NEXTORA reflects a vision of transforming student productivity through innovation. Mihir is passionate about merging education with advanced technology. With NEXTORA, he aims to build an AI assistant that makes everyday learning fun, effective, and deeply personalized. His journey as a young creator demonstrates that students can lead innovation and craft tools for the future.
-        </p>
-        <div class="mt-4 flex justify-center">
-          <button onclick="redirectToAbout()" id="aboutRedirectBtn"
-            class="transition-all duration-300 border-2 border-blue-500 text-blue-500 hover:bg-white hover:text-black font-semibold px-6 py-2 rounded-full text-sm shadow-md">
-            Read More About Us
-          </button>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const textArray = [
-      "Let's create with AI",
-      "Powered by MOUNT LITERA",
-      "NEXTORA Empowers You",
-      "Smart tools for smart learners"
-    ];
-    let currentIndex = 0, charIndex = 0, speed = 100;
-    function typeText() {
-      const el = document.getElementById("typedText");
-      if (charIndex < textArray[currentIndex].length) {
-        el.innerHTML += textArray[currentIndex].charAt(charIndex);
-        charIndex++;
-        setTimeout(typeText, speed);
-      } else {
-        setTimeout(eraseText, 2000);
-      }
-    }
-    function eraseText() {
-      const el = document.getElementById("typedText");
-      if (charIndex > 0) {
-        el.innerHTML = textArray[currentIndex].substring(0, charIndex - 1);
-        charIndex--;
-        setTimeout(eraseText, speed / 2);
-      } else {
-        currentIndex = (currentIndex + 1) % textArray.length;
-        setTimeout(typeText, speed);
-      }
-    }
-    document.addEventListener("DOMContentLoaded", () => typeText());
-
-    const fadeEls = document.querySelectorAll(".fade-on-scroll");
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in-view");
-        }
-      });
-    }, { threshold: 0.15 });
-    fadeEls.forEach(el => observer.observe(el));
-
-    const quotes = [
-      "“The future belongs to those who prepare for it today.”",
-      "“Smart work beats hard work when done with the right tools.”",
-      "“Education is the most powerful weapon to change the world.”"
-    ];
-    let quoteIndex = 0;
-    const quoteSlider = document.getElementById('quoteSlider');
-    function updateQuote() {
-      quoteSlider.textContent = quotes[quoteIndex];
-      quoteIndex = (quoteIndex + 1) % quotes.length;
-    }
-    setInterval(updateQuote, 4000);
-    updateQuote();
-
-    function animateValue(id, start, end, duration, suffix = "") {
-      const el = document.getElementById(id);
-      let startTime = null;
-      const step = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        el.textContent = Math.floor(progress * (end - start) + start) + suffix;
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }
-    window.addEventListener("load", () => {
-      animateValue("students", 0, 5000, 1500);
-      animateValue("accuracy", 0, 98, 1500, "%");
-      animateValue("speed", 0, 3, 1500);
-    });
-
-    function toggleTheme() {
-      document.body.classList.toggle('light-mode');
-    }
-
-    const tips = [
-      "Break big topics into small tasks. Focus on one concept at a time.",
-      "Use AI tools like NEXTORA to simplify complex topics quickly.",
-      "Review your notes within 24 hours to retain what you learned.",
-      "Avoid multitasking. Focus boosts retention.",
-      "Teach what you learn. Explaining helps understanding.",
-      "Practice active recall. Don’t just read, quiz yourself.",
-      "Use spaced repetition instead of last-minute cramming."
-    ];
-    let tipIndex = 0;
-    const tipEl = document.getElementById("aiTip");
-    function rotateTip() {
-      if (tipEl) {
-        tipEl.textContent = tips[tipIndex];
-        tipIndex = (tipIndex + 1) % tips.length;
-      }
-    }
-    setInterval(rotateTip, 10000);
-    rotateTip();
-
-    function redirectToAbout() {
-      const btn = document.getElementById("aboutRedirectBtn");
-      btn.classList.remove("text-blue-500");
-      btn.classList.add("bg-white", "text-black");
-      setTimeout(() => {
-        window.location.href = "about.html";
-      }, 200);
-    }
-  </script>
-
-  <footer class="fixed bottom-2 left-1/2 transform -translate-x-1/2 text-white text-xs opacity-40 hover:opacity-80 transition-opacity duration-300 z-50 select-none w-full text-center px-2">
-    © 2025 NEXTORA. Created with Love by Mihir Anand. All rights reserved.
-  </footer>
 </body>
 </html>
