@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools – NEXTORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #000000);
+      background-size: 400% 400%;
+      animation: gradientMove 30s ease infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    .glass-box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(90, 63, 255, 0.2);
+    }
+    .launch-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .launch-btn:hover {
+      background-color: white;
+      color: #3b82f6;
+    }
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body class="text-white">
+  <header class="flex justify-between items-center px-6 py-4">
+    <div class="text-xl font-bold">NEXTORA</div>
+    <a href="index.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold">Home</a>
+  </header>  <main class="px-4 sm:px-10 py-8 fade-in">
+    <h1 class="text-3xl font-bold text-center mb-8">NEXTORA Tool Suite</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Injected tool cards start -->
+  <!-- Reuse pattern -->
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Ask AI</h2>
+    <p class="text-sm opacity-70 mt-1">Your intelligent AI assistant trained to respond with emotional understanding and accuracy. Whether you're stuck on a question, need writing help, or just want to explore ideas — Ask AI has your back.</p>
+    <a href="askai.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Essay Maker</h2>
+    <p class="text-sm opacity-70 mt-1">Easily generate high-quality essays, letters, descriptive paragraphs, or formal writings. Just describe the type and topic, and this tool crafts well-structured, ready-to-submit content instantly.</p>
+    <a href="essay.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Research Tool</h2>
+    <p class="text-sm opacity-70 mt-1">Get detailed, fact-based research with structured insights on any topic. Designed to support project work, assignments, and knowledge building with AI-powered depth and clarity.</p>
+    <a href="research.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Study Notes Maker</h2>
+    <p class="text-sm opacity-70 mt-1">Automatically generate structured notes content for any topic. Each point is crafted clearly, so you can easily transfer it into a notes tool for clean, points by points delivery.</p>
+    <a href="presentation.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Fun Fact Generator</h2>
+    <p class="text-sm opacity-70 mt-1">Discover interesting and surprising facts in every click. Keep your curiosity alive with random, AI-curated fun facts from the world of science, history, tech, and beyond.</p>
+    <a href="funfact.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Flashcard Generator</h2>
+    <p class="text-sm opacity-70 mt-1">Convert long topics or chapters into Q&A style flashcards. Designed for quick revision and active recall, making exam prep faster and more effective.</p>
+    <a href="flashcards.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Note Summarizer</h2>
+    <p class="text-sm opacity-70 mt-1">Transform lengthy notes into short, precise summaries. Perfect for reviewing complex topics in a fraction of the time while keeping the core information intact.</p>
+    <a href="summarizer.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Speech Writer</h2>
+    <p class="text-sm opacity-70 mt-1">Instantly write speeches for school assemblies, competitions, or events. You provide the topic or tone, and this tool generates a structured and engaging speech.</p>
+    <a href="speechwriter.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Study Timetable Creator</h2>
+    <p class="text-sm opacity-70 mt-1">Smartly plan your study schedule based on available hours and subjects. Helps you stay organized, reduce stress, and stay consistent with your learning goals.</p>
+    <a href="timetable.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Science Concept Explainer</h2>
+    <p class="text-sm opacity-70 mt-1">Confused by scientific terms or theories? This tool simplifies tough science concepts into easy-to-understand explanations that anyone can grasp.</p>
+    <a href="science.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Grammar Improver</h2>
+    <p class="text-sm opacity-70 mt-1">Fix grammar, improve sentence structure, and enhance writing fluency. Paste any paragraph and get back a polished, professional version instantly.</p>
+    <a href="grammar.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Creative Story Generator</h2>
+    <p class="text-sm opacity-70 mt-1">Stuck on what to write? Generate inspiring story, poem, or narrative prompts across genres and themes to kickstart your creativity.</p>
+    <a href="story.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Image Generator</h2>
+    <p class="text-sm opacity-70 mt-1">Have data but don’t know how to present it? This tool transforms raw information into clean Images</p>
+    <a href="image.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Doubt Solver with IMAGE SCANNING</h2>
+    <p class="text-sm opacity-70 mt-1">Solve your toughest doubts with step-by-step explanations. Just enter your question or scan an image and get a detailed answer with full reasoning.</p>
+    <a href="doubt.html" class="launch-btn">Launch Tool →</a>
+  </div>
+
+  <div class="glass-box">
+    <h2 class="font-semibold text-lg">Interactive Timeline for History and Geography</h2>
+    <p class="text-sm opacity-70 mt-1">Can generate NCERT based timelines for History and Geography.</p>
+    <a href="mcq.html" class="launch-btn">Launch Tool →</a>
+  </div>
+  <!-- Injected tool cards end -->
+
+</div>
+
+  </main>  <footer class="text-center text-xs text-white/40 py-6">© 2025 NEXTORA. Created with ♥ by Mihir Anand.</footer>
+</body>
+</html>

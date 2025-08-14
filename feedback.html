@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback | Nextora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .animated-bg {
+      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+      background-size: 600% 600%;
+      animation: smoothGradient 30s ease infinite;
+    }
+    @keyframes smoothGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      color: #fff;
+    }
+    .feedback-btn {
+      @apply bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-white/20 transition-all;
+    }
+    .feedback-btn.active {
+      @apply bg-[#5a3fff] text-white;
+    }
+    #starRating i.active {
+      @apply text-yellow-400;
+    }
+  </style>
+</head>
+<body class="animated-bg min-h-screen flex items-center justify-center px-4">
+
+  <div class="glass max-w-2xl w-full">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6">📝 Feedback - NEXTORA</h1>
+
+    <!-- Emoji Buttons -->
+    <div class="flex flex-wrap justify-center gap-3 mb-6">
+      <button class="feedback-btn" data-rating="Very Good">😊 Very Good</button>
+      <button class="feedback-btn" data-rating="Good">🙂 Good</button>
+      <button class="feedback-btn" data-rating="Bad">😕 Bad</button>
+      <button class="feedback-btn" data-rating="Very Bad">😡 Very Bad</button>
+    </div>
+
+    <!-- Star Rating -->
+    <div class="flex justify-center text-yellow-400 mb-6 text-2xl" id="starRating">
+      <i class="far fa-star cursor-pointer" data-star="1"></i>
+      <i class="far fa-star cursor-pointer" data-star="2"></i>
+      <i class="far fa-star cursor-pointer" data-star="3"></i>
+      <i class="far fa-star cursor-pointer" data-star="4"></i>
+      <i class="far fa-star cursor-pointer" data-star="5"></i>
+    </div>
+
+    <!-- Message Box -->
+    <textarea id="feedbackMessage" rows="4"
+      class="w-full bg-white/10 text-white p-3 rounded-lg border-none focus:outline-none mb-6 resize-none placeholder-white/60"
+      placeholder="Write your suggestions or comments here..."></textarea>
+
+    <!-- Submit Button -->
+    <div class="text-center">
+      <button id="submitFeedback"
+        class="bg-[#5a3fff] hover:bg-[#7a5bff] text-white font-semibold px-6 py-2 rounded-full transition-all">
+        Submit Feedback
+      </button>
+    </div>
+
+    <!-- Status -->
+    <p id="feedbackStatus" class="text-green-400 mt-4 text-center hidden">✅ Feedback Submitted!</p>
+
+    <!-- Feedback Display -->
+    <div class="mt-8">
+      <h2 class="text-xl font-semibold mb-4 text-center">📋 Previous Feedback</h2>
+      <ul id="feedbackList" class="space-y-3 max-h-60 overflow-y-auto text-sm"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Variables
+    let selectedRating = "";
+    let selectedStars = 0;
+
+    // Emoji Buttons
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedRating = btn.dataset.rating;
+      });
+    });
+
+    // Star Selection
+    document.querySelectorAll('#starRating i').forEach(star => {
+      star.addEventListener('click', () => {
+        selectedStars = parseInt(star.dataset.star);
+        updateStars(selectedStars);
+      });
+    });
+
+    function updateStars(rating) {
+      document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('fas', 'active');
+        star.classList.add('far');
+        if (parseInt(star.dataset.star) <= rating) {
+          star.classList.add('fas', 'active');
+          star.classList.remove('far');
+        }
+      });
+    }
+
+    // Submit
+    document.getElementById('submitFeedback').addEventListener('click', () => {
+      const message = document.getElementById('feedbackMessage').value.trim();
+
+      if (!selectedRating && !selectedStars && !message) {
+        alert("Please enter some feedback.");
+        return;
+      }
+
+      const feedback = {
+        rating: selectedRating || "N/A",
+        stars: selectedStars,
+        message: message || "No comment",
+        date: new Date().toLocaleString()
+      };
+
+      // Save to LocalStorage
+      const existing = JSON.parse(localStorage.getItem("nextoraFeedbacks") || "[]");
+      existing.unshift(feedback);
+      localStorage.setItem("nextoraFeedbacks", JSON.stringify(existing));
+
+      // UI Update
+      document.getElementById('feedbackStatus').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('feedbackStatus').classList.add('hidden');
+      }, 3000);
+
+      renderFeedbacks();
+      resetForm();
+    });
+
+    // Load feedbacks
+    function renderFeedbacks() {
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+      const feedbacks = JSON.parse(localStorage.getItem("nextoraFeedbacks") || "[]");
+      if (feedbacks.length === 0) {
+        list.innerHTML = `<li class="text-white/60 italic text-center">No feedback yet.</li>`;
+        return;
+      }
+      feedbacks.forEach(fb => {
+        const stars = "⭐".repeat(fb.stars);
+        const item = document.createElement("li");
+        item.classList.add("bg-white/5", "p-3", "rounded", "text-white", "glass");
+        item.innerHTML = `
+          <div><strong>${fb.rating}</strong> | ${stars || "No stars"}</div>
+          <div class="text-sm mt-1">${fb.message}</div>
+          <div class="text-xs text-white/60 mt-1">${fb.date}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function resetForm() {
+      document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+      selectedRating = "";
+      selectedStars = 0;
+      updateStars(0);
+      document.getElementById('feedbackMessage').value = "";
+    }
+
+    // Init
+    document.addEventListener("DOMContentLoaded", renderFeedbacks);
+  </script>
+</body>
+</html>

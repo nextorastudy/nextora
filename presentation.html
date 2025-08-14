@@ -1,17 +1,18 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Presentation Generator - NEXTORA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXTORA – Study Notes Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
     }
     .animated-bg {
-      background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000);
+      background: linear-gradient(270deg, #000000, #001133, #003366, #000000);
       background-size: 600% 600%;
-      animation: gradientBG 30s ease infinite;
+      animation: gradientBG 25s ease infinite;
     }
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
@@ -20,104 +21,136 @@
     }
     .glass-card {
       background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1rem;
       padding: 1.5rem;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease forwards;
     }
-    .glass-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 40px rgba(90, 63, 255, 0.2);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body class="animated-bg min-h-screen text-white">
-  <header class="flex justify-between items-center p-6">
-    <h1 class="text-2xl font-bold">NEXTORA</h1>
-    <button onclick="location.href='index.html'" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 font-semibold">Home</button>
+<body class="animated-bg text-white min-h-screen">
+
+  <header class="p-6 flex justify-between items-center animate-fade-in">
+    <h1 class="text-3xl font-extrabold tracking-wide">NEXTORA</h1>
+    <button onclick="location.href='index.html'" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition">
+      Home
+    </button>
   </header>
-  <main class="max-w-4xl mx-auto px-6 text-center mt-10">
-    <h2 class="text-3xl font-extrabold mb-6">AI Presentation Generator</h2>
-    <p class="text-white/80 mb-4">Generate visually engaging presentation slides powered by AI and Unsplash.</p><div class="glass-card mb-6">
-  <input type="text" id="topicInput" class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" placeholder="Enter your topic (e.g., Matter in our surroundings)" />
-  <div class="flex gap-4 mt-4">
-    <input type="number" id="slideCount" value="6" max="10" min="1" class="w-20 p-2 rounded bg-transparent border border-white/20 text-center text-white" />
-    <button onclick="generateSlides()" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Generate Slides</button>
-  </div>
-  <div class="mt-4 text-sm text-white/60 italic">You can generate up to 10 slides. Default is 6.</div>
-</div>
 
-<div class="glass-card mb-6">
-  <h3 class="text-xl font-bold mb-2">Predefined Templates</h3>
-  <div class="flex flex-wrap justify-center gap-2">
-    <button onclick="fillTemplate('Photosynthesis process for class 9')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Photosynthesis</button>
-    <button onclick="fillTemplate('Newton’s laws of motion with examples')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Newton’s Laws</button>
-    <button onclick="fillTemplate('Climate change and its effects')" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm">Climate Change</button>
-  </div>
-</div>
+  <main class="max-w-3xl mx-auto px-6 text-center mt-10">
+    <h2 class="text-4xl font-bold mb-4 animate-pulse">📚 Study Notes Generator</h2>
+    <p class="text-white/70 mb-6">Type any topic and get clear, concise AI-generated notes instantly.</p>
 
-<div id="output" class="space-y-6"></div>
+    <!-- Suggestions -->
+    <div class="mb-4 flex flex-wrap justify-center gap-2">
+      <button class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition" onclick="setTopic('Photosynthesis')">Photosynthesis</button>
+      <button class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition" onclick="setTopic('World War II')">World War II</button>
+      <button class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition" onclick="setTopic('Newton\'s Laws')">Newton's Laws</button>
+      <button class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition" onclick="setTopic('Digital Marketing')">Digital Marketing</button>
+    </div>
 
-<p class="text-xs mt-8 text-white/50 italic">Note: If content is missing or unclear, please retry or modify your prompt. Sorry for any inconvenience.</p>
+    <!-- Input and Button -->
+    <div class="glass-card mb-6">
+      <input type="text" id="topicInput" placeholder="Enter your topic (e.g. Quantum Physics)" 
+             class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" />
+      <button onclick="generateNotes()" class="mt-4 px-6 py-2 bg-blue-600 rounded hover:bg-blue-800 font-semibold transition">
+        Generate Notes
+      </button>
+    </div>
 
-  </main>  <script>
-    const apiKey = "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";
-    const unsplashKey = "EUoo-oIuZM6LMyeikqmMmnL7Or_tNCWLsGcu0r00B8Y";
+    <!-- Output -->
+    <div id="output" class="glass-card text-left whitespace-pre-line max-h-96 overflow-y-auto relative">
+    </div>
 
-    function fillTemplate(text) {
-      document.getElementById('topicInput').value = text;
+    <!-- Copy button -->
+    <button onclick="copyOutput()" id="copyBtn" class="hidden mt-3 px-4 py-2 bg-green-600 hover:bg-green-800 rounded transition">
+      📋 Copy Notes
+    </button>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-white/40 text-sm mt-16 mb-4">
+    Made with ❤️ by the NEXTORA Team – Powered by Groq & LLaMA 3
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const apiKey = "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"; // Replace with your key
+
+    function setTopic(text) {
+      document.getElementById("topicInput").value = text;
+      generateNotes();
     }
 
-    async function generateSlides() {
+    document.getElementById("topicInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") generateNotes();
+    });
+
+    async function generateNotes() {
       const topic = document.getElementById("topicInput").value.trim();
-      const slideCount = parseInt(document.getElementById("slideCount").value) || 6;
-
       const outputDiv = document.getElementById("output");
-      if (!topic) return alert("Please enter a topic.");
+      const copyBtn = document.getElementById("copyBtn");
 
-      outputDiv.innerHTML = `<p class='text-white/70 animate-pulse'>Generating slides...</p>`;
+      if (!topic) {
+        alert("Please enter a topic.");
+        return;
+      }
+
+      outputDiv.innerHTML = `
+        <div class="flex items-center space-x-2 animate-pulse">
+          <svg class="animate-spin h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Generating notes...</span>
+        </div>
+      `;
+      copyBtn.classList.add("hidden");
 
       try {
-        const aiResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+            "Authorization": `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: "llama3-70b-8192",
             messages: [
-              { role: "system", content: "You are an AI assistant that generates presentation slide text based on a topic. Provide slide content in numbered format." },
-              { role: "user", content: `Generate ${slideCount} slide contents on: ${topic}` }
+              {
+                role: "system",
+                content: "You are a helpful AI tutor that explains school topics in clear and concise notes for students."
+              },
+              {
+                role: "user",
+                content: `Write short, well-structured study notes on the topic: ${topic}`
+              }
             ]
           })
         });
 
-        const aiData = await aiResponse.json();
-        const rawSlides = aiData.choices?.[0]?.message?.content || "Sorry, no content was generated.";
-
-        const slides = rawSlides.split(/\n\n+/).filter(p => p.trim().length > 0);
-        outputDiv.innerHTML = "";
-
-        for (let i = 0; i < Math.min(slides.length, slideCount); i++) {
-          const imgResp = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(topic)}&client_id=${unsplashKey}`);
-          const imgData = await imgResp.json();
-
-          outputDiv.innerHTML += `
-            <div class='glass-card animate-fade-in'>
-              <img src="${imgData.urls?.regular || '#'}" alt="${topic}" class="rounded mb-4 w-full h-64 object-cover" />
-              <div class="text-left">
-                ${slides[i].replace(/\n/g, '<br>')}
-              </div>
-            </div>
-          `;
-        }
-      } catch (err) {
-        outputDiv.innerHTML = `<div class='text-red-400'>Something went wrong while generating your slides. Sorry for the trouble.</div>`;
-        console.error(err);
+        const data = await res.json();
+        const outputText = data.choices?.[0]?.message?.content || "No notes generated. Please try again.";
+        outputDiv.innerHTML = outputText;
+        copyBtn.classList.remove("hidden");
+      } catch (error) {
+        outputDiv.innerHTML = "❌ Error occurred while generating notes.";
+        console.error(error);
       }
     }
-  </script></body>
+
+    function copyOutput() {
+      const text = document.getElementById("output").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Notes copied to clipboard!");
+      });
+    }
+  </script>
+</body>
 </html>

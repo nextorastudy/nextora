@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Creative Story Generator - NEXTORA</title>
+  <title>Grammar Improver - NEXTORA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -41,34 +41,31 @@
   </header>
 
   <main class="max-w-3xl mx-auto px-6 text-center mt-10">
-    <h2 class="text-3xl font-extrabold mb-6">Creative Story Generator</h2>
-    <p class="text-white/80 mb-6">Enter a theme, topic, or keyword and NEXTORA will generate a creative writing prompt.</p>
+    <h2 class="text-3xl font-extrabold mb-6">Grammar Improver</h2>
+    <p class="text-white/80 mb-6">Paste your text below and NEXTORA will improve grammar, clarity, and spelling.</p>
     
     <div class="glass-card mb-6">
-      <input type="text" id="inputPrompt" class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" placeholder="e.g., Fantasy world with no water" />
-      <button onclick="generatePrompt()" class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Generate Prompt</button>
+      <textarea id="inputText" rows="6" class="w-full p-3 rounded bg-transparent border border-white/20 text-white placeholder:text-white/50" placeholder="Paste your paragraph here..."></textarea>
+      <button onclick="improveGrammar()" class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Improve Grammar</button>
     </div>
 
     <div id="outputSection" class="glass-card mb-6 hidden">
-      <h3 class="text-xl font-bold mb-2">Your Creative Prompt:</h3>
+      <h3 class="text-xl font-bold mb-2">Improved Text:</h3>
       <div id="outputText" class="text-left whitespace-pre-line text-white/90 min-h-[80px]"></div>
       <button onclick="readAloud()" class="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-white hover:text-blue-600 transition-all">Read Aloud</button>
     </div>
-
-    <p class="text-xs mt-6 text-white/40 italic">* Creativity unlocked through AI brilliance.</p>
   </main>
 
   <script>
     const apiKey = "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";
 
-    async function generatePrompt() {
-      const input = document.getElementById("inputPrompt").value.trim();
+    async function improveGrammar() {
+      const input = document.getElementById("inputText").value.trim();
       const outputSection = document.getElementById("outputSection");
       const outputText = document.getElementById("outputText");
 
-      if (!input) return alert("Please enter a topic or keyword.");
-
-      outputText.innerHTML = "⏳ Generating creative prompt...";
+      if (!input) return alert("Please paste some text.");
+      outputText.innerHTML = "⏳ Improving text...";
       outputSection.classList.remove("hidden");
 
       try {
@@ -81,37 +78,37 @@
           body: JSON.stringify({
             model: "llama3-70b-8192",
             messages: [
-              { role: "system", content: "You are a creative prompt generator. Respond with a unique, imaginative, and detailed writing prompt based on the user's theme." },
+              { role: "system", content: "You are an expert grammar assistant. Improve the grammar, spelling, and clarity of the user's input." },
               { role: "user", content: input }
             ]
           })
         });
 
         const data = await res.json();
-        const result = data.choices?.[0]?.message?.content || "No response from AI.";
+        const improved = data.choices?.[0]?.message?.content || "No response from AI.";
 
-        // Typing effect
+        // Typing animation
         outputText.innerHTML = "";
         let i = 0;
         function typeWriter() {
-          if (i < result.length) {
-            outputText.innerHTML += result.charAt(i);
+          if (i < improved.length) {
+            outputText.innerHTML += improved.charAt(i);
             i++;
             setTimeout(typeWriter, 20);
           }
         }
         typeWriter();
       } catch (e) {
-        outputText.innerHTML = "⚠️ Error fetching prompt. Try again later.";
+        outputText.textContent = "⚠️ Error improving text. Please try again later.";
         console.error(e);
       }
     }
 
     function readAloud() {
       const text = document.getElementById("outputText").textContent;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1;
-      speechSynthesis.speak(utterance);
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 1;
+      speechSynthesis.speak(utter);
     }
   </script>
 </body>
