@@ -1,77 +1,218 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>About Us - NEXTORA</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
+
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+
     body {
+
       font-family: 'Inter', sans-serif;
+
     }
+
     .animated-bg {
+
       background: linear-gradient(270deg, #0f051d, #1a103d, #3f0d38, #612e8b, #f44369, #000000, #0f051d);
+
       background-size: 600% 600%;
+
       animation: bgScroll 30s ease infinite;
+
     }
+
     @keyframes bgScroll {
+
       0% { background-position: 0% 50%; }
+
       50% { background-position: 100% 50%; }
+
       100% { background-position: 0% 50%; }
+
     }
+
     .glass {
+
       background: rgba(255, 255, 255, 0.05);
+
       backdrop-filter: blur(10px);
+
       -webkit-backdrop-filter: blur(10px);
+
       border-radius: 1rem;
+
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+
       border: 1px solid rgba(255, 255, 255, 0.1);
+
     }
+
     .fade-in {
+
       animation: fadeIn 0.8s ease-out forwards;
+
     }
+
     @keyframes fadeIn {
+
       from { opacity: 0; transform: translateY(20px); }
+
       to { opacity: 1; transform: translateY(0); }
+
     }
+
   </style>
+
 </head>
+
 <body class="animated-bg min-h-screen text-white">
 
+
+
   <nav class="w-full sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/10 text-white px-6 py-4 flex justify-between items-center">
+
     <div class="text-xl font-extrabold">NEXTORA</div>
+
     <div>
+
       <a href="index.html" class="text-sm font-semibold hover:text-purple-300 transition duration-300">Home</a>
+
     </div>
+
   </nav>
 
+
+
   <main class="max-w-3xl mx-auto px-6 py-12 fade-in">
+
     <div class="glass p-6 sm:p-10 text-center">
-      <img src="mihir.jpg" alt="Mihir Anand" class="w-32 h-32 rounded-full mx-auto border-4 border-purple-500 object-cover shadow-lg mb-4" />
-      <h1 class="text-3xl font-bold mb-2">Mihir Anand</h1>
-      <p class="text-purple-300 mb-2">Developer of NEXTORA</p>
+
+      <img src="PHOTO-1.jpeg" alt="Mihir Anand" class="w-32 h-32 rounded-full mx-auto border-4 border-purple-500 object-cover shadow-lg mb-4" />
+
+      <h1 class="text-3xl font-bold mb-2">BRAHMABYTES</h1>
+
+      <p class="text-purple-300 mb-2">Developers of NEXTORA</p>
+
       <p class="text-white/90 leading-relaxed mb-6">
-        I'm a passionate student at <strong>Mount Litera Zee School</strong>, deeply interested in building futuristic tools using AI. I'm currently developing smart web apps like NEXTORA — an AI-powered education assistant to help students learn better, faster, and smarter.
-      </p>
+
+  We're a passionate team of students from <strong>Mount Litera Zee School</strong>, united by our interest in building futuristic tools using AI. Together — <strong>Mihir, Prashant, Ashutosh, Ankit, Adarsh,</strong> and <strong>Shreyansh</strong> — we developed <strong>NEXTORA</strong>, an AI-powered education assistant designed to help students learn better, faster, and smarter.
+
+</p>
+
+
+
+
 
       <div class="text-left space-y-4 text-white/90">
+
         <p><strong>📍 Location:</strong> Ara, Bihar, India</p>
+
         <p><strong>🎓 Class:</strong> Grade 9</p>
+
         <p><strong>📧 Email:</strong> <a href="mailto:ofcmihiranand@gmail.com" class="underline text-purple-300 hover:text-purple-400">ofcmihiranand@gmail.com</a></p>
+
         <p><strong>💡 Skills:</strong> HTML, CSS, JavaScript, Tailwind, AI Integration (Gemini, Groq), Firebase, UI/UX</p>
+
         <p><strong>🧠 Interests:</strong> AI development, science, history, creative coding, and making educational tools</p>
+
         <p><strong>🌟 Vision:</strong> To revolutionize student learning through personalized, powerful, and AI-driven tools.</p>
+
       </div>
+
     </div>
+
+
+
+    <!-- Team Section -->
+
+    <section class="glass p-6 sm:p-10 mt-12 fade-in text-center">
+
+      <h2 class="text-3xl font-bold mb-6 text-purple-300">Meet the NEXTORA Team</h2>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 text-white/90">
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Prashant</h3>
+
+          <p class="text-sm mt-1">Co-Developer</p>
+
+        </div>
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Ashutosh</h3>
+
+          <p class="text-sm mt-1">UI/UX Designer</p>
+
+        </div>
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Ankit</h3>
+
+          <p class="text-sm mt-1">Tech & Integration</p>
+
+        </div>
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Adarsh</h3>
+
+          <p class="text-sm mt-1">AI & Data</p>
+
+        </div>
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Shreyansh</h3>
+
+          <p class="text-sm mt-1">Content & Testing</p>
+
+        </div>
+
+        <div class="bg-white/10 p-4 rounded-xl border border-white/10 shadow-md hover:shadow-lg transition">
+
+          <h3 class="text-xl font-semibold text-purple-200">Mihir Anand</h3>
+
+          <p class="text-sm mt-1">Lead Developer</p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
 
     <div class="text-center mt-10 fade-in">
+
       <a href="index.html"
+
         class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold bg-purple-600 hover:bg-purple-800 hover:shadow-lg transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500">
+
         ⬅ Back to Home
+
       </a>
+
     </div>
+
   </main>
 
+
+
 </body>
+
 </html>
+
